@@ -1,116 +1,84 @@
+"use client"
+
+import { useState } from "react"
 import Image from "next/image"
 import Link from "next/link"
 import { ArrowLeft } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import Navigation from "@/components/navigation"
+
+// Custom hook for smooth scrolling
+const useSmoothScroll = () => {
+  const scrollToSection = (sectionId: string) => {
+    const section = document.getElementById(sectionId);
+    if (section) {
+      // Calculate header height for offset
+      const headerHeight = document.querySelector('header')?.offsetHeight || 0;
+      
+      // Get the section's position
+      const sectionPosition = section.getBoundingClientRect().top + window.scrollY;
+      
+      // Scroll to the section with offset for the header
+      window.scrollTo({
+        top: sectionPosition - headerHeight,
+        behavior: 'smooth'
+      });
+    }
+  };
+  
+  return { scrollToSection };
+};
 
 export default function AboutPage() {
+  const { scrollToSection } = useSmoothScroll();
+  
   return (
     <div className="min-h-screen bg-black text-white">
       {/* Navigation */}
-      <header className="container mx-auto px-4 py-6 flex justify-between items-center">
-        <div className="flex items-center">
-          <Link href="/">
-            <h1 className="text-xl font-bold">
-              designed<span className="text-[#7CFF00]">bydan</span>
-            </h1>
-          </Link>
-          <p className="text-xs ml-2 opacity-70 uppercase tracking-wider">VISUAL | WEB DESIGN</p>
-        </div>
-        <nav className="flex items-center gap-8">
-          <Link href="/servicios" className="text-sm hover:text-[#7CFF00] transition-colors">
-            Servicios
-          </Link>
-          <Link href="/proyectos" className="text-sm hover:text-[#7CFF00] transition-colors">
-            Proyectos
-          </Link>
-          <Button className="bg-white text-black hover:bg-[#7CFF00] rounded-full px-6">
-            Hablemos de tu proyecto <ArrowLeft className="ml-2 h-4 w-4" />
-          </Button>
-        </nav>
-      </header>
+      <Navigation />
 
       {/* About Section */}
-      <main className="container mx-auto px-4 py-24">
-        <Link href="/" className="inline-flex items-center text-sm mb-12 hover:text-[#7CFF00] transition-colors">
-          <ArrowLeft className="mr-2 h-4 w-4" /> Volver al inicio
-        </Link>
-
-        <div className="grid md:grid-cols-2 gap-16 items-center">
-          <div>
-            <h2 className="text-5xl font-bold mb-8">
-              Sobre <span className="text-[#7CFF00]">mí</span>
-            </h2>
-            <div className="space-y-6 text-lg">
-              <p>
-                Soy Dan, diseñador web y especialista en branding con más de 8 años de experiencia en el sector digital.
-              </p>
-              <p>
-                Mi pasión es transformar ideas en experiencias digitales que conectan con las audiencias y generan
-                resultados tangibles para mis clientes.
-              </p>
-              <p>
-                Con un enfoque centrado en el usuario y un ojo atento al detalle, cada proyecto que emprendo está
-                diseñado para destacar en el competitivo mundo digital.
-              </p>
-              <p>
-                Mi filosofía de diseño se basa en tres pilares fundamentales: impactar visualmente, comunicar
-                efectivamente y convertir estratégicamente.
-              </p>
-            </div>
-
-            <div className="mt-12">
-              <h3 className="text-2xl font-bold mb-4">Experiencia</h3>
-              <div className="space-y-6">
-                <div className="border-l-2 border-[#7CFF00] pl-6">
-                  <div className="text-sm text-[#7CFF00]">2020 - Presente</div>
-                  <div className="font-semibold text-lg">Fundador & Director Creativo</div>
-                  <div className="opacity-70">designedbydan</div>
-                </div>
-                <div className="border-l-2 border-white/20 pl-6">
-                  <div className="text-sm opacity-70">2016 - 2020</div>
-                  <div className="font-semibold text-lg">Senior UI/UX Designer</div>
-                  <div className="opacity-70">Agencia Digital XYZ</div>
-                </div>
-                <div className="border-l-2 border-white/20 pl-6">
-                  <div className="text-sm opacity-70">2014 - 2016</div>
-                  <div className="font-semibold text-lg">Web Designer</div>
-                  <div className="opacity-70">Estudio Creativo ABC</div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div className="relative">
-            <div className="aspect-square rounded-2xl overflow-hidden">
+      <section className="container mx-auto px-4 py-16">
+        <div className="max-w-4xl mx-auto">
+          <h1 className="text-4xl font-bold mb-8">About Me</h1>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
+            <div>
               <Image
-                src="/placeholder.svg?height=800&width=800"
-                alt="Dan - Diseñador Web"
-                width={800}
-                height={800}
-                className="object-cover w-full h-full"
+                src="/placeholder.svg?height=600&width=400"
+                alt="Profile"
+                width={400}
+                height={600}
+                className="rounded-lg"
               />
             </div>
-            <div className="absolute -bottom-8 -left-8 bg-black p-6 rounded-xl border border-white/10">
-              <div className="flex items-center gap-4">
-                <div className="w-12 h-12 rounded-full bg-[#7CFF00]/20 flex items-center justify-center">
-                  <span className="text-[#7CFF00] text-xl">8+</span>
-                </div>
-                <div>
-                  <div className="text-sm opacity-70">Años de</div>
-                  <div className="font-semibold">Experiencia</div>
-                </div>
-              </div>
+            <div>
+              <h2 className="text-2xl font-bold mb-4">Pareng Lance</h2>
+              <p className="text-lg opacity-80 mb-6">
+                I'm a passionate web designer and developer with over 8 years of experience creating beautiful, functional websites that help businesses grow.
+              </p>
+              <p className="text-lg opacity-80 mb-6">
+                My approach combines strategic thinking with creative design to deliver solutions that not only look great but also drive results.
+              </p>
+              <p className="text-lg opacity-80 mb-8">
+                I specialize in creating user-centered designs that enhance the user experience and increase conversion rates.
+              </p>
+              <Button 
+                className="bg-[#7CFF00] text-black hover:bg-white rounded-full px-6"
+                onClick={() => window.open('https://m.me/mr.c0oletz', '_blank')}
+              >
+                Let's work together <ArrowLeft className="ml-2 h-4 w-4" />
+              </Button>
             </div>
           </div>
         </div>
-      </main>
+      </section>
 
       {/* Footer */}
       <footer className="container mx-auto px-4 py-12 border-t border-white/10">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           <div>
             <h3 className="text-xl font-bold mb-4">
-              designed<span className="text-[#7CFF00]">bydan</span>
+              Pareng <span className="text-[#7CFF00]">Lance</span>
             </h3>
             <p className="text-sm opacity-70 max-w-xs">
               Transformando ideas en experiencias digitales que conectan, impactan y convierten.
@@ -134,6 +102,14 @@ export default function AboutPage() {
                   className="text-sm opacity-70 hover:opacity-100 hover:text-[#7CFF00] transition-colors"
                 >
                   Proyectos
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/blog"
+                  className="text-sm opacity-70 hover:opacity-100 hover:text-[#7CFF00] transition-colors"
+                >
+                  Blog
                 </Link>
               </li>
               <li>
@@ -209,7 +185,7 @@ export default function AboutPage() {
 
         <div className="flex flex-col md:flex-row justify-between items-center mt-12 pt-8 border-t border-white/10">
           <p className="text-xs opacity-50">
-            © {new Date().getFullYear()} designedbydan. Todos los derechos reservados.
+            © {new Date().getFullYear()} Pareng Lance. Todos los derechos reservados.
           </p>
           <div className="flex items-center mt-4 md:mt-0">
             <span className="text-xs opacity-50 mr-2">Hecho con</span>

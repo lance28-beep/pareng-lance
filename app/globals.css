@@ -62,7 +62,7 @@ body {
   }
 }
 
-/* Marquee effect for the philosophy section */
+/* Enhanced Marquee effect for the philosophy section */
 .marquee-container {
   display: flex;
   width: 100%;
@@ -72,8 +72,15 @@ body {
 
 .marquee-content {
   display: flex;
-  animation: marquee 30s linear infinite;
+  animation: marquee 40s linear infinite;
   white-space: nowrap;
+  will-change: transform;
+}
+
+/* Create a smooth infinite loop by duplicating content */
+.marquee-content h2 {
+  display: inline-block;
+  padding-right: 2rem;
 }
 
 @keyframes marquee {
@@ -81,7 +88,38 @@ body {
     transform: translateX(0);
   }
   100% {
-    transform: translateX(-100%);
+    transform: translateX(-50%);
   }
+}
+
+/* Add a second animation for the second row to create a continuous effect */
+.marquee-content:nth-child(2) {
+  animation: marquee2 40s linear infinite;
+}
+
+@keyframes marquee2 {
+  0% {
+    transform: translateX(-50%);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+
+/* Add a subtle pulse effect to the text */
+@keyframes pulse {
+  0% {
+    opacity: 0.8;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0.8;
+  }
+}
+
+.marquee-content h2 span {
+  animation: pulse 3s ease-in-out infinite;
 }
 

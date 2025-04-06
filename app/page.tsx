@@ -1,19 +1,41 @@
 "use client"
 
-import { useState } from "react"
-import Image from "next/image"
+import { useState, useEffect } from "react"
+
 import Link from "next/link"
 import { ArrowRight, ArrowDown, ChevronRight, Star, Users, Code, Palette, Layout, CheckCircle } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { motion } from "framer-motion"
-import ProcessSection from "@/components/process-section"
-import MethodologySection from "@/components/methodology-section"
+
 import PhilosophySection from "@/components/philosophy-section"
 import ContactForm from "@/components/contact-form"
 import BackgroundParticles from "@/components/background-particles"
 
+// Custom hook for smooth scrolling
+const useSmoothScroll = () => {
+  const scrollToSection = (sectionId: string) => {
+    const section = document.getElementById(sectionId);
+    if (section) {
+      // Calculate header height for offset
+      const headerHeight = document.querySelector('header')?.offsetHeight || 0;
+      
+      // Get the section's position
+      const sectionPosition = section.getBoundingClientRect().top + window.scrollY;
+      
+      // Scroll to the section with offset for the header
+      window.scrollTo({
+        top: sectionPosition - headerHeight,
+        behavior: 'smooth'
+      });
+    }
+  };
+  
+  return { scrollToSection };
+};
+
 export default function Home() {
   const [activeTab, setActiveTab] = useState("all")
+  const { scrollToSection } = useSmoothScroll();
 
   const projects = [
     {
@@ -114,175 +136,6 @@ export default function Home() {
         {/* Philosophy Section */}
         <PhilosophySection />
 
-        {/* Portfolio Section */}
-        <section className="container mx-auto px-4 py-24 relative" id="projects">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold mb-4">
-              Our <span className="text-[#7CFF00]">projects</span>
-            </h2>
-            <p className="text-lg opacity-70 max-w-2xl mx-auto">
-              Explore some of our most recent work and discover how we've helped our clients achieve their goals.
-            </p>
-          </div>
-
-          {/* Project Filters */}
-          <div className="flex flex-wrap justify-center gap-2 mb-12">
-            <Button
-              variant={activeTab === "all" ? "default" : "outline"}
-              className={
-                activeTab === "all"
-                  ? "bg-[#7CFF00] text-black hover:bg-[#7CFF00]/90"
-                  : "text-white border-white/20 hover:bg-white/10"
-              }
-              onClick={() => setActiveTab("all")}
-            >
-              All
-            </Button>
-            <Button
-              variant={activeTab === "web" ? "default" : "outline"}
-              className={
-                activeTab === "web"
-                  ? "bg-[#7CFF00] text-black hover:bg-[#7CFF00]/90"
-                  : "text-white border-white/20 hover:bg-white/10"
-              }
-              onClick={() => setActiveTab("web")}
-            >
-              Web Design
-            </Button>
-            <Button
-              variant={activeTab === "branding" ? "default" : "outline"}
-              className={
-                activeTab === "branding"
-                  ? "bg-[#7CFF00] text-black hover:bg-[#7CFF00]/90"
-                  : "text-white border-white/20 hover:bg-white/10"
-              }
-              onClick={() => setActiveTab("branding")}
-            >
-              Branding
-            </Button>
-            <Button
-              variant={activeTab === "ui" ? "default" : "outline"}
-              className={
-                activeTab === "ui"
-                  ? "bg-[#7CFF00] text-black hover:bg-[#7CFF00]/90"
-                  : "text-white border-white/20 hover:bg-white/10"
-              }
-              onClick={() => setActiveTab("ui")}
-            >
-              UI/UX
-            </Button>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredProjects.map((project) => (
-              <div key={project.id} className="rounded-xl overflow-hidden relative group">
-                <Image
-                  src={`/placeholder.svg?height=600&width=800&text=${project.title}`}
-                  alt={project.title}
-                  width={800}
-                  height={600}
-                  className="w-full h-auto object-cover transition-transform duration-500 group-hover:scale-105"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex flex-col justify-end p-6 backdrop-blur-sm">
-                  <div className="transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
-                    <div className="text-xs uppercase tracking-wider text-[#7CFF00] mb-2">{project.category}</div>
-                    <h3 className="text-xl font-bold">{project.title}</h3>
-                    <p className="text-sm opacity-80">{project.description}</p>
-                    <Button variant="link" className="text-[#7CFF00] p-0 mt-2 hover:text-white">
-                      View project <ChevronRight className="h-4 w-4 ml-1" />
-                    </Button>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-
-          <div className="mt-16 text-center">
-            <Button className="bg-white text-black hover:bg-[#7CFF00] rounded-full px-6 group relative overflow-hidden">
-              <span className="relative z-10 flex items-center">
-                View all projects <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
-              </span>
-              <span className="absolute inset-0 bg-[#7CFF00] scale-x-0 group-hover:scale-x-100 origin-left transition-transform duration-500"></span>
-            </Button>
-          </div>
-        </section>
-
-        {/* Testimonials Section */}
-        <section className="bg-white/5 backdrop-blur-sm py-24 relative" id="testimonials">
-          <div className="container mx-auto px-4">
-            <div className="text-center mb-16">
-              <h2 className="text-4xl font-bold mb-4">
-                What our <span className="text-[#7CFF00]">clients</span> say
-              </h2>
-              <p className="text-lg opacity-70 max-w-2xl mx-auto">
-                Discover why our clients trust us for their digital projects.
-              </p>
-            </div>
-
-            <div className="grid md:grid-cols-3 gap-8">
-              {testimonials.map((testimonial) => (
-                <div key={testimonial.id} className="bg-black/50 backdrop-blur-sm rounded-xl p-8 border border-white/10">
-                  <div className="flex items-center gap-1 mb-6">
-                    <Star className="w-4 h-4 fill-[#7CFF00] text-[#7CFF00]" />
-                    <Star className="w-4 h-4 fill-[#7CFF00] text-[#7CFF00]" />
-                    <Star className="w-4 h-4 fill-[#7CFF00] text-[#7CFF00]" />
-                    <Star className="w-4 h-4 fill-[#7CFF00] text-[#7CFF00]" />
-                    <Star className="w-4 h-4 fill-[#7CFF00] text-[#7CFF00]" />
-                  </div>
-                  <p className="italic mb-6 text-sm leading-relaxed">"{testimonial.quote}"</p>
-                  <div className="flex items-center gap-4">
-                    <Image
-                      src={testimonial.image || "/placeholder.svg"}
-                      alt={testimonial.name}
-                      width={50}
-                      height={50}
-                      className="rounded-full object-cover"
-                    />
-                    <div>
-                      <div className="font-semibold">{testimonial.name}</div>
-                      <div className="text-xs opacity-70">{testimonial.company}</div>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* Clients Section */}
-        <section className="container mx-auto px-4 py-24 relative">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold mb-4">
-              Brands that <span className="text-[#7CFF00]">trust</span> us
-            </h2>
-          </div>
-
-          <div className="flex flex-wrap justify-center items-center gap-12 opacity-60">
-            {clients.map((client) => (
-              <div key={client.id} className="grayscale hover:grayscale-0 transition-all duration-300">
-                <Image
-                  src={client.logo || "/placeholder.svg"}
-                  alt={client.name}
-                  width={160}
-                  height={80}
-                  className="h-12 w-auto object-contain"
-                />
-              </div>
-            ))}
-          </div>
-        </section>
-
-        {/* Experience Section */}
-        <section className="container mx-auto px-4 py-24 text-center relative">
-          <div className="max-w-5xl mx-auto">
-            <p className="text-xl md:text-3xl leading-relaxed">
-              With over 8 years of experience in{" "}
-              <span className="text-[#7CFF00]">web design, branding, and social media</span>, I help brands and
-              entrepreneurs build their digital presence with innovative solutions. Every project I design is focused on
-              making an impact, communicating, and converting.
-            </p>
-          </div>
-        </section>
 
         {/* Contact Form Section */}
         <ContactForm />
@@ -294,11 +147,15 @@ export default function Home() {
               Ready to transform your <span className="text-[#7CFF00]">digital presence</span>?
             </h2>
             <p className="text-lg opacity-80 max-w-2xl mx-auto mb-10">
-              Let's talk about your project and how we can help you achieve your goals.
+                  Let's talk about your project and how we can help you achieve your goals.
             </p>
-            <Button className="bg-[#7CFF00] text-black hover:bg-white rounded-full px-8 py-6 text-lg group relative overflow-hidden">
+            {/* link to my messenger   */}
+            <Button 
+              className="bg-[#7CFF00] text-black hover:bg-white rounded-full px-8 py-6 text-lg group relative overflow-hidden"
+              onClick={() => window.open('https://m.me/mr.c0oletz', '_blank')}
+            >
               <span className="relative z-10 flex items-center">
-                Contact now <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
+                Message me <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
               </span>
               <span className="absolute inset-0 bg-white scale-x-0 group-hover:scale-x-100 origin-left transition-transform duration-500"></span>
             </Button>
@@ -310,7 +167,7 @@ export default function Home() {
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             <div className="md:col-span-2">
               <h3 className="text-xl font-bold mb-4">
-                designed<span className="text-[#7CFF00]">bydan</span>
+                Pareng<span className="text-[#7CFF00]">Lance</span>
               </h3>
               <p className="text-sm opacity-70 max-w-xs mb-6">
                 Transforming ideas into digital experiences that connect, impact, and convert.
@@ -381,28 +238,28 @@ export default function Home() {
               <h4 className="font-semibold mb-4">Links</h4>
               <ul className="space-y-2">
                 <li>
-                  <Link
-                    href="#services"
-                    className="text-sm opacity-70 hover:opacity-100 hover:text-[#7CFF00] transition-colors"
+                  <button
+                    onClick={() => scrollToSection('servicios')}
+                    className="text-sm opacity-70 hover:opacity-100 hover:text-[#7CFF00] transition-colors text-left"
                   >
                     Services
-                  </Link>
+                  </button>
                 </li>
                 <li>
-                  <Link
-                    href="#projects"
-                    className="text-sm opacity-70 hover:opacity-100 hover:text-[#7CFF00] transition-colors"
+                  <button
+                    onClick={() => scrollToSection('proyectos')}
+                    className="text-sm opacity-70 hover:opacity-100 hover:text-[#7CFF00] transition-colors text-left"
                   >
                     Projects
-                  </Link>
+                  </button>
                 </li>
                 <li>
-                  <Link
-                    href="#testimonials"
-                    className="text-sm opacity-70 hover:opacity-100 hover:text-[#7CFF00] transition-colors"
+                  <button
+                    onClick={() => scrollToSection('testimonios')}
+                    className="text-sm opacity-70 hover:opacity-100 hover:text-[#7CFF00] transition-colors text-left"
                   >
                     Testimonials
-                  </Link>
+                  </button>
                 </li>
                 <li>
                   <Link
@@ -418,28 +275,36 @@ export default function Home() {
             <div>
               <h4 className="font-semibold mb-4">Contact</h4>
               <ul className="space-y-2">
-                <li className="text-sm opacity-70">hello@designedbydan.com</li>
-                <li className="text-sm opacity-70">+34 123 456 789</li>
-                <li className="text-sm opacity-70">Madrid, Spain</li>
+                <li>
+                  <button
+                    onClick={() => scrollToSection('contact')}
+                    className="text-sm opacity-70 hover:opacity-100 hover:text-[#7CFF00] transition-colors text-left"
+                  >
+                    Contact us
+                  </button>
+                </li>
+                <li>
+                  <a
+                    href="mailto:contact@example.com"
+                    className="text-sm opacity-70 hover:opacity-100 hover:text-[#7CFF00] transition-colors"
+                  >
+                    contact@example.com
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="tel:+1234567890"
+                    className="text-sm opacity-70 hover:opacity-100 hover:text-[#7CFF00] transition-colors"
+                  >
+                    +1 (234) 567-890
+                  </a>
+                </li>
               </ul>
-              <div className="mt-6">
-                <h4 className="font-semibold mb-2 text-sm">Newsletter</h4>
-                <div className="flex">
-                  <input
-                    type="email"
-                    placeholder="Your email"
-                    className="px-3 py-2 rounded-l-lg bg-white/10 border border-white/10 outline-none w-full"
-                  />
-                  <Button className="rounded-l-none bg-[#7CFF00] text-black hover:bg-[#7CFF00]/90">
-                    <ArrowRight className="h-4 w-4" />
-                  </Button>
-                </div>
-              </div>
             </div>
           </div>
 
           <div className="flex flex-col md:flex-row justify-between items-center mt-12 pt-8 border-t border-white/10">
-            <p className="text-xs opacity-50">© {new Date().getFullYear()} designedbydan. All rights reserved.</p>
+            <p className="text-xs opacity-50">© {new Date().getFullYear()} Pareng Lance. All rights reserved.</p>
             <div className="flex items-center gap-4 mt-4 md:mt-0">
               <Link href="#" className="text-xs opacity-50 hover:opacity-70">
                 Privacy Policy
@@ -448,19 +313,15 @@ export default function Home() {
                 Terms & Conditions
               </Link>
               <div className="flex items-center">
-                <span className="text-xs opacity-50 mr-2">Made with</span>
-                <span className="text-[#7CFF00]">♥</span>
+                <span className="text-xs opacity-50 mr-2">Developed by</span>
+
+                {/* link to my portfolio */}
+                <Link href="https://lance28-beep.github.io/portfolio-website/" className="text-[#7CFF00]">Lance</Link>
+
               </div>
             </div>
           </div>
         </footer>
-
-        {/* Made with Framer badge */}
-        <div className="fixed bottom-4 right-4">
-          <div className="bg-white/10 backdrop-blur-md rounded-full px-3 py-1.5 text-xs flex items-center">
-            <span>Made in Framer</span>
-          </div>
-        </div>
       </div>
     </>
   )

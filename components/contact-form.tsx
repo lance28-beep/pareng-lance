@@ -2,9 +2,9 @@
 
 import type React from "react"
 
-import { useState } from "react"
+import { useState, useRef } from "react"
 import { motion } from "framer-motion"
-import { Send, CheckCircle } from "lucide-react"
+import { Send, CheckCircle, Mail, Phone, MapPin, Facebook, Instagram, Linkedin, Twitter, Youtube, Dribbble } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
@@ -12,21 +12,57 @@ import { Textarea } from "@/components/ui/textarea"
 export default function ContactForm() {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isSubmitted, setIsSubmitted] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+  const formRef = useRef<HTMLFormElement>(null)
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     setIsSubmitting(true)
+    setError(null)
 
-    // Simulate form submission
-    setTimeout(() => {
-      setIsSubmitting(false)
-      setIsSubmitted(true)
+    // Get form data
+    const formData = new FormData(e.currentTarget)
+    const name = formData.get('name') as string
+    const email = formData.get('email') as string
+    const subject = formData.get('subject') as string
+    const message = formData.get('message') as string
 
-      // Reset form after showing success message
-      setTimeout(() => {
-        setIsSubmitted(false)
-      }, 3000)
-    }, 1500)
+    // Google Form submission URL
+    const googleFormUrl = 'https://docs.google.com/forms/d/e/1FAIpQLScxmdkgqphMLRxHOfhNIkLYHYM7xQ52Ehe4jI2kvXEYeq45kg/formResponse'
+    
+    // Create a new FormData object for Google Forms
+    const googleFormData = new FormData()
+    googleFormData.append('entry.1168164901', name)
+    googleFormData.append('entry.1218904268', email)
+    googleFormData.append('entry.1726878304', subject)
+    googleFormData.append('entry.25819410', message)
+
+    // Submit to Google Form using fetch
+    fetch(googleFormUrl, {
+      method: 'POST',
+      mode: 'no-cors', // This is important for cross-origin requests
+      body: googleFormData
+    })
+      .then(() => {
+        // Success - even though we won't get a response due to CORS
+        setIsSubmitting(false)
+        setIsSubmitted(true)
+        
+        // Reset form
+        if (formRef.current) {
+          formRef.current.reset()
+        }
+        
+        // Hide success message after 3 seconds
+        setTimeout(() => {
+          setIsSubmitted(false)
+        }, 3000)
+      })
+      .catch((err) => {
+        console.error('Error submitting form:', err)
+        setIsSubmitting(false)
+        setError("Failed to send message. Please try again later.")
+      })
   }
 
   return (
@@ -74,31 +110,31 @@ export default function ContactForm() {
               <div className="space-y-4">
                 <div className="flex items-start gap-4">
                   <div className="w-10 h-10 rounded-full bg-[#7CFF00]/20 flex items-center justify-center mt-1">
-                    <span className="text-[#7CFF00]">📧</span>
+                    <Mail className="h-5 w-5 text-[#7CFF00]" />
                   </div>
                   <div>
                     <p className="text-sm opacity-70">Email</p>
-                    <p className="font-medium">hello@designedbydan.com</p>
+                    <p className="font-medium">vallelance8@gmail.com</p>
                   </div>
                 </div>
 
                 <div className="flex items-start gap-4">
                   <div className="w-10 h-10 rounded-full bg-[#7CFF00]/20 flex items-center justify-center mt-1">
-                    <span className="text-[#7CFF00]">📱</span>
+                    <Phone className="h-5 w-5 text-[#7CFF00]" />
                   </div>
                   <div>
                     <p className="text-sm opacity-70">Phone</p>
-                    <p className="font-medium">+34 123 456 789</p>
+                    <p className="font-medium">+63 928 898 8692</p>
                   </div>
                 </div>
 
                 <div className="flex items-start gap-4">
                   <div className="w-10 h-10 rounded-full bg-[#7CFF00]/20 flex items-center justify-center mt-1">
-                    <span className="text-[#7CFF00]">📍</span>
+                    <MapPin className="h-5 w-5 text-[#7CFF00]" />
                   </div>
                   <div>
                     <p className="text-sm opacity-70">Location</p>
-                    <p className="font-medium">Madrid, Spain</p>
+                    <p className="font-medium">Naga City, Philippines</p>
                   </div>
                 </div>
               </div>
@@ -107,69 +143,86 @@ export default function ContactForm() {
                 <p className="text-sm opacity-70 mb-4">Follow us on social media</p>
                 <div className="flex gap-4">
                   <a
-                    href="#"
-                    className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-[#7CFF00]/20 transition-colors"
+                    href="https://www.facebook.com/HustleWithParengLance"
+                    className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-[#7CFF00]/20 transition-colors hover:scale-110"
+                    aria-label="Facebook"
                   >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="18"
-                      height="18"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
+                    <Facebook className="h-5 w-5" />
+                  </a>
+                  <a
+                    href="https://www.instagram.com/vallelance/"
+                    className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-[#7CFF00]/20 transition-colors hover:scale-110"
+                    aria-label="Instagram"
+                  >
+                    <Instagram className="h-5 w-5" />
+                  </a>
+                  <a
+                    href="https://www.linkedin.com/in/rolando-valle-43159b199/"
+                    className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-[#7CFF00]/20 transition-colors hover:scale-110"
+                    aria-label="LinkedIn"
+                  >
+                    <Linkedin className="h-5 w-5" />
+                  </a>
+                  <a
+                    href="https://x.com/rolando_va52047"
+                    className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-[#7CFF00]/20 transition-colors hover:scale-110"
+                    aria-label="X (formerly Twitter)"
+                  >
+                    <svg 
+                      xmlns="http://www.w3.org/2000/svg" 
+                      width="20" 
+                      height="20" 
+                      viewBox="0 0 24 24" 
+                      fill="none" 
+                      stroke="currentColor" 
+                      strokeWidth="2" 
+                      strokeLinecap="round" 
                       strokeLinejoin="round"
                     >
-                      <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path>
+                      <path d="M4 4l11.733 16h4.267l-11.733 -16z" />
+                      <path d="M4 20l6.768 -6.768m2.46 -2.46l6.772 -6.772" />
                     </svg>
                   </a>
                   <a
-                    href="#"
-                    className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-[#7CFF00]/20 transition-colors"
+                    href="https://www.youtube.com/@rolandovalle7490"
+                    className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-[#7CFF00]/20 transition-colors hover:scale-110"
+                    aria-label="YouTube"
                   >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="18"
-                      height="18"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
+                    <Youtube className="h-5 w-5" />
+                  </a>
+                  <a
+                    href="https://www.tiktok.com/@mr.c0oletz?lang=env"
+                    className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-[#7CFF00]/20 transition-colors hover:scale-110"
+                    aria-label="TikTok"
+                  >
+                    <svg 
+                      xmlns="http://www.w3.org/2000/svg" 
+                      width="20" 
+                      height="20" 
+                      viewBox="0 0 24 24" 
+                      fill="none" 
+                      stroke="currentColor" 
+                      strokeWidth="2" 
+                      strokeLinecap="round" 
                       strokeLinejoin="round"
                     >
-                      <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
-                      <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
-                      <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+                      <path d="M19 9a7 7 0 1 1-6.74-6.74V2h-3v8h3v-1.26A7 7 0 0 1 19 9Z" />
+                      <path d="M10 14v-2a7 7 0 0 1 7-7" />
                     </svg>
                   </a>
                   <a
-                    href="#"
-                    className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-[#7CFF00]/20 transition-colors"
+                    href="https://dribbble.com/lanceValle"
+                    className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-[#7CFF00]/20 transition-colors hover:scale-110"
+                    aria-label="Dribbble"
                   >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="18"
-                      height="18"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    >
-                      <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path>
-                      <rect x="2" y="9" width="4" height="12"></rect>
-                      <circle cx="4" cy="4" r="2"></circle>
-                    </svg>
+                    <Dribbble className="h-5 w-5" />
                   </a>
                 </div>
               </div>
             </div>
           </motion.div>
 
-          {/* Contact Form */}
+          {/* Custom Contact Form */}
           <motion.div
             initial={{ opacity: 0, x: 30 }}
             whileInView={{ opacity: 1, x: 0 }}
@@ -193,13 +246,14 @@ export default function ContactForm() {
                     </p>
                   </div>
                 ) : (
-                  <form onSubmit={handleSubmit} className="space-y-6">
+                  <form ref={formRef} onSubmit={handleSubmit} className="space-y-6">
                     <div className="space-y-2">
                       <label htmlFor="name" className="text-sm font-medium">
                         Name
                       </label>
                       <Input
                         id="name"
+                        name="name"
                         placeholder="Your name"
                         required
                         className="bg-white/10 border-white/10 focus-visible:ring-[#7CFF00]/50 focus-visible:border-[#7CFF00]/50"
@@ -212,8 +266,22 @@ export default function ContactForm() {
                       </label>
                       <Input
                         id="email"
+                        name="email"
                         type="email"
                         placeholder="you@example.com"
+                        required
+                        className="bg-white/10 border-white/10 focus-visible:ring-[#7CFF00]/50 focus-visible:border-[#7CFF00]/50"
+                      />
+                    </div>
+
+                    <div className="space-y-2">
+                      <label htmlFor="subject" className="text-sm font-medium">
+                        Subject
+                      </label>
+                      <Input
+                        id="subject"
+                        name="subject"
+                        placeholder="Subject of your message"
                         required
                         className="bg-white/10 border-white/10 focus-visible:ring-[#7CFF00]/50 focus-visible:border-[#7CFF00]/50"
                       />
@@ -225,11 +293,16 @@ export default function ContactForm() {
                       </label>
                       <Textarea
                         id="message"
+                        name="message"
                         placeholder="Tell us about your project..."
                         required
                         className="bg-white/10 border-white/10 focus-visible:ring-[#7CFF00]/50 focus-visible:border-[#7CFF00]/50 min-h-[120px]"
                       />
                     </div>
+
+                    {error && (
+                      <div className="text-red-500 text-sm">{error}</div>
+                    )}
 
                     <Button
                       type="submit"

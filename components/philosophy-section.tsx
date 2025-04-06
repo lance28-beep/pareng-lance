@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 import Image from "next/image"
 import Link from "next/link"
 import {
@@ -17,18 +17,51 @@ import {
   Zap,
   Award,
   CheckCircle,
+  ChevronLeft,
+  MessageCircle,
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import { motion } from "framer-motion"
+import { motion, useInView, useAnimation } from "framer-motion"
 import { cn } from "@/lib/utils"
 import ProcessSection from "@/components/process-section"
 import MethodologySection from "@/components/methodology-section"
 import CountUp from './CountUp'
+import FAQItem from "@/components/faq-item"
+
+// Custom hook for smooth scrolling
+const useSmoothScroll = (setIsMenuOpen: React.Dispatch<React.SetStateAction<boolean>>) => {
+  const scrollToSection = (sectionId: string) => {
+    const section = document.getElementById(sectionId);
+    if (section) {
+      // Close mobile menu if open
+      setIsMenuOpen(false);
+      
+      // Calculate header height for offset
+      const headerHeight = document.querySelector('header')?.offsetHeight || 0;
+      
+      // Get the section's position
+      const sectionPosition = section.getBoundingClientRect().top + window.scrollY;
+      
+      // Scroll to the section with offset for the header
+      window.scrollTo({
+        top: sectionPosition - headerHeight,
+        behavior: 'smooth'
+      });
+    }
+  };
+  
+  return { scrollToSection };
+};
 
 export default function Home() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [activeTab, setActiveTab] = useState("all")
   const [isScrolled, setIsScrolled] = useState(false)
+  const [isDragging, setIsDragging] = useState(false)
+  const [startX, setStartX] = useState(0)
+  const [scrollLeft, setScrollLeft] = useState(0)
+  const carouselRef = useRef<HTMLDivElement>(null)
+  const { scrollToSection } = useSmoothScroll(setIsMenuOpen);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -59,34 +92,121 @@ export default function Home() {
       id: 1,
       name: "Carlos Rodríguez",
       company: "TechSolutions",
-      image: "/placeholder.svg?height=100&width=100",
+      image: "https://randomuser.me/api/portraits/men/32.jpg",
       quote:
-        "Working with Dan was an exceptional experience. He perfectly understood our vision and transformed it into a design that exceeded our expectations.",
+        "Working with Pareng Lance was transformative for our brand. His deep understanding of user psychology and attention to detail resulted in a website that not only looks stunning but also converts visitors into customers at an unprecedented rate.",
+      rating: 5,
+      role: "CEO",
+      highlight: "Unprecedented conversion rates"
     },
     {
       id: 2,
       name: "María González",
       company: "Fashion Brand",
-      image: "/placeholder.svg?height=100&width=100",
+      image: "https://randomuser.me/api/portraits/women/44.jpg",
       quote:
-        "The redesign of our online store increased our conversions by 40%. The attention to detail and strategic approach made the difference.",
+        "The e-commerce redesign by Pareng Lance increased our conversions by 40% in just the first month. His strategic approach to user experience and his ability to create visually stunning designs that drive sales is truly remarkable.",
+      rating: 5,
+      role: "Marketing Director",
+      highlight: "40% increase in conversions"
     },
     {
       id: 3,
       name: "Javier López",
       company: "FinTech App",
-      image: "/placeholder.svg?height=100&width=100",
+      image: "https://randomuser.me/api/portraits/men/67.jpg",
       quote:
-        "The user interface that Dan designed for our application has received praise from both users and investors. An exceptional work.",
+        "Pareng Lance's UI design for our financial app received a 4.9-star rating on both app stores. His intuitive interfaces and attention to accessibility made our complex financial services approachable for all users.",
+      rating: 5,
+      role: "Product Manager",
+      highlight: "4.9-star app store rating"
     },
+    {
+      id: 4,
+      name: "Sofia Martinez",
+      company: "Healthcare Platform",
+      image: "https://randomuser.me/api/portraits/women/33.jpg",
+      quote:
+        "Pareng Lance's ability to create intuitive interfaces for complex healthcare data was a game-changer for our platform. Patient engagement increased by 65% after implementing his designs, and our medical staff reported significantly improved workflow efficiency.",
+      rating: 5,
+      role: "UX Director",
+      highlight: "65% increase in patient engagement"
+    },
+    {
+      id: 5,
+      name: "David Chen",
+      company: "E-commerce Startup",
+      image: "https://randomuser.me/api/portraits/men/45.jpg",
+      quote:
+        "The mobile app Pareng Lance designed for us has been featured in design publications and has a 4.8-star rating on both app stores. His attention to micro-interactions and user experience details created a product that users genuinely love to use.",
+      rating: 5,
+      role: "Founder",
+      highlight: "Featured in design publications"
+    },
+    {
+      id: 6,
+      name: "Emma Wilson",
+      company: "Educational Platform",
+      image: "https://randomuser.me/api/portraits/women/68.jpg",
+      quote:
+        "Our student engagement increased by 60% after implementing Pareng Lance's design. He truly understands how to create experiences that connect with users on an emotional level while maintaining functionality and purpose.",
+      rating: 5,
+      role: "Education Director",
+      highlight: "60% increase in student engagement"
+    }
   ]
 
   const clients = [
-    { id: 1, name: "TechCorp", logo: "/placeholder.svg?height=80&width=160" },
-    { id: 2, name: "FinanceHub", logo: "/placeholder.svg?height=80&width=160" },
-    { id: 3, name: "MediaGroup", logo: "/placeholder.svg?height=80&width=160" },
-    { id: 4, name: "RetailBrand", logo: "/placeholder.svg?height=80&width=160" },
-    { id: 5, name: "HealthTech", logo: "/placeholder.svg?height=80&width=160" },
+    { 
+      id: 1, 
+      name: "TechCorp Solutions", 
+      logo: "https://placehold.co/400x200/1a1a1a/7CFF00?text=TechCorp&font=/font/raleway"
+    },
+    { 
+      id: 2, 
+      name: "FinanceHub Global", 
+      logo: "https://placehold.co/400x200/1a1a1a/7CFF00?text=FinanceHub&font=/font/raleway"
+    },
+    { 
+      id: 3, 
+      name: "MediaGroup Studios", 
+      logo: "https://placehold.co/400x200/1a1a1a/7CFF00?text=MediaGroup&font=/font/raleway"
+    },
+    { 
+      id: 4, 
+      name: "RetailBrand Co", 
+      logo: "https://placehold.co/400x200/1a1a1a/7CFF00?text=RetailBrand&font=/font/raleway"
+    },
+    { 
+      id: 5, 
+      name: "HealthTech Innovations", 
+      logo: "https://placehold.co/400x200/1a1a1a/7CFF00?text=HealthTech&font=/font/raleway"
+    },
+    { 
+      id: 6, 
+      name: "EcoSmart Systems", 
+      logo: "https://placehold.co/400x200/1a1a1a/7CFF00?text=EcoSmart&font=/font/raleway"
+    },
+    { 
+      id: 7, 
+      name: "CloudNet Services", 
+      logo: "https://placehold.co/400x200/1a1a1a/7CFF00?text=CloudNet&font=/font/raleway"
+    },
+    { 
+      id: 8, 
+      name: "AeroSpace Dynamics", 
+      logo: "https://placehold.co/400x200/1a1a1a/7CFF00?text=AeroSpace&font=/font/raleway"
+    },
+    { 
+      id: 9, 
+      name: "GreenEnergy Corp", 
+      logo: "https://placehold.co/400x200/1a1a1a/7CFF00?text=GreenEnergy&font=/font/raleway"
+    },
+    { 
+      id: 10, 
+      name: "DataFlow Analytics", 
+      logo: "https://placehold.co/400x200/1a1a1a/7CFF00?text=DataFlow&font=/font/raleway"
+    }
   ]
 
   const services = [
@@ -150,6 +270,151 @@ export default function Home() {
     },
   ]
 
+  const scrollToTestimonial = (index: number) => {
+    const testimonialCarousel = document.getElementById('testimonial-carousel');
+    const dots = document.querySelectorAll('#testimonios button');
+    
+    if (!testimonialCarousel) return;
+    
+    // Update active dot
+    dots.forEach((dot, i) => {
+      if (i === index) {
+        dot.classList.add('bg-[#7CFF00]', 'w-6');
+        dot.classList.remove('bg-white/30');
+      } else {
+        dot.classList.remove('bg-[#7CFF00]', 'w-6');
+        dot.classList.add('bg-white/30');
+      }
+    });
+    
+    // Scroll to the testimonial
+    const scrollAmount = index * 416; // 400px width + 16px gap
+    testimonialCarousel.style.transform = `translateX(-${scrollAmount}px)`;
+    setScrollLeft(scrollAmount);
+  };
+
+  const handleMouseDown = (e: React.MouseEvent) => {
+    if (!carouselRef.current) return;
+    
+    setIsDragging(true);
+    setStartX(e.pageX - carouselRef.current.offsetLeft);
+    setScrollLeft(carouselRef.current.scrollLeft);
+    
+    // Change cursor to grabbing
+    carouselRef.current.style.cursor = 'grabbing';
+  };
+
+  const handleMouseUp = () => {
+    setIsDragging(false);
+    if (carouselRef.current) {
+      carouselRef.current.style.cursor = 'grab';
+    }
+  };
+
+  const handleMouseMove = (e: React.MouseEvent) => {
+    if (!isDragging || !carouselRef.current) return;
+    
+    e.preventDefault();
+    const x = e.pageX - carouselRef.current.offsetLeft;
+    const walk = (x - startX) * 2; // Scroll speed multiplier
+    
+    // Calculate the new scroll position
+    const newScrollLeft = scrollLeft - walk;
+    
+    // Find the closest testimonial index
+    const testimonialWidth = 416; // 400px width + 16px gap
+    const newIndex = Math.round(newScrollLeft / testimonialWidth);
+    
+    // Ensure the index is within bounds
+    const boundedIndex = Math.max(0, Math.min(newIndex, testimonials.length - 1));
+    
+    // Update the carousel position
+    scrollToTestimonial(boundedIndex);
+  };
+
+  const handleMouseLeave = () => {
+    setIsDragging(false);
+    if (carouselRef.current) {
+      carouselRef.current.style.cursor = 'grab';
+    }
+  };
+
+  useEffect(() => {
+    // Auto-scroll testimonials every 5 seconds
+    let currentIndex = 0;
+    const testimonialCarousel = document.getElementById('testimonial-carousel');
+    const dots = document.querySelectorAll('#testimonios button');
+    
+    const autoScroll = () => {
+      // Only auto-scroll if not being dragged
+      if (!isDragging) {
+        currentIndex = (currentIndex + 1) % testimonials.length;
+        scrollToTestimonial(currentIndex);
+      }
+    };
+    
+    // Set up interval for auto-scrolling
+    const intervalId = setInterval(autoScroll, 5000);
+    
+    // Clean up interval on component unmount
+    return () => clearInterval(intervalId);
+  }, [isDragging]);
+
+  // Update the scrollToContact function to use our new hook
+  const scrollToContact = () => {
+    const contactSection = document.getElementById('contacto');
+    if (contactSection) {
+      scrollToSection('contacto');
+    } else {
+      // Fallback to the contact page if the section is not found on the current page
+      window.location.href = '/contacto';
+    }
+  };
+
+  // Add refs and animation controls for the stats section
+  const statsRef = useRef(null);
+  const isStatsInView = useInView(statsRef, { once: true, amount: 0.3 });
+  const statsControls = useAnimation();
+
+  // Trigger animation when stats come into view
+  useEffect(() => {
+    if (isStatsInView) {
+      statsControls.start("visible");
+    }
+  }, [isStatsInView, statsControls]);
+
+  // Animation variants for the stats
+  const statsVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        duration: 0.6,
+        staggerChildren: 0.2
+      }
+    }
+  };
+
+  const statItemVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: { duration: 0.5 }
+    }
+  };
+
+  // Animation variants for the testimonial cards
+  const testimonialVariants = {
+    hidden: { opacity: 0, scale: 0.9 },
+    visible: {
+      opacity: 1,
+      scale: 1,
+      transition: { duration: 0.5 }
+    }
+  };
+
   return (
     <div className="min-h-screen bg-black text-white">
       {/* Navigation */}
@@ -171,19 +436,40 @@ export default function Home() {
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center gap-8">
-            <Link href="#servicios" className="text-sm hover:text-[#7CFF00] transition-colors">
+            <button 
+              onClick={() => scrollToSection('servicios')} 
+              className="text-sm hover:text-[#7CFF00] transition-colors"
+            >
               Services
-            </Link>
-            <Link href="#proyectos" className="text-sm hover:text-[#7CFF00] transition-colors">
+            </button>
+            <button 
+              onClick={() => scrollToSection('proyectos')} 
+              className="text-sm hover:text-[#7CFF00] transition-colors"
+            >
               Projects
-            </Link>
-            <Link href="#testimonios" className="text-sm hover:text-[#7CFF00] transition-colors">
+            </button>
+            <button 
+              onClick={() => scrollToSection('testimonios')} 
+              className="text-sm hover:text-[#7CFF00] transition-colors"
+            >
               Testimonials
-            </Link>
-            <Link href="#contacto" className="text-sm hover:text-[#7CFF00] transition-colors">
+            </button>
+            <button 
+              onClick={() => scrollToSection('faq')} 
+              className="text-sm hover:text-[#7CFF00] transition-colors"
+            >
+              FAQ
+            </button>
+            <button 
+              onClick={() => scrollToSection('contact')} 
+              className="text-sm hover:text-[#7CFF00] transition-colors"
+            >
               Contact
-            </Link>
-            <Button className="bg-white text-black hover:bg-[#7CFF00] rounded-full px-6">
+            </button>
+            <Button 
+              className="bg-white text-black hover:bg-[#7CFF00] rounded-full px-6"
+              onClick={() => window.open('https://m.me/mr.c0oletz', '_blank')}
+            >
               Let's talk about your project <ArrowRight className="ml-2 h-4 w-4" />
             </Button>
           </nav>
@@ -202,37 +488,39 @@ export default function Home() {
           )}
         >
           <nav className="container mx-auto px-4 py-8 flex flex-col gap-6">
-            <Link
-              href="#servicios"
-              className="text-xl py-2 border-b border-white/10 hover:text-[#7CFF00] transition-colors"
-              onClick={() => setIsMenuOpen(false)}
+            <button
+              onClick={() => scrollToSection('servicios')}
+              className="text-xl py-2 border-b border-white/10 hover:text-[#7CFF00] transition-colors text-left"
             >
               Services
-            </Link>
-            <Link
-              href="#proyectos"
-              className="text-xl py-2 border-b border-white/10 hover:text-[#7CFF00] transition-colors"
-              onClick={() => setIsMenuOpen(false)}
+            </button>
+            <button
+              onClick={() => scrollToSection('proyectos')}
+              className="text-xl py-2 border-b border-white/10 hover:text-[#7CFF00] transition-colors text-left"
             >
               Projects
-            </Link>
-            <Link
-              href="#testimonios"
-              className="text-xl py-2 border-b border-white/10 hover:text-[#7CFF00] transition-colors"
-              onClick={() => setIsMenuOpen(false)}
+            </button>
+            <button
+              onClick={() => scrollToSection('testimonios')}
+              className="text-xl py-2 border-b border-white/10 hover:text-[#7CFF00] transition-colors text-left"
             >
               Testimonials
-            </Link>
-            <Link
-              href="#contacto"
-              className="text-xl py-2 border-b border-white/10 hover:text-[#7CFF00] transition-colors"
-              onClick={() => setIsMenuOpen(false)}
+            </button>
+            <button
+              onClick={() => scrollToSection('faq')}
+              className="text-xl py-2 border-b border-white/10 hover:text-[#7CFF00] transition-colors text-left"
+            >
+              FAQ
+            </button>
+            <button
+              onClick={() => scrollToSection('contacto')}
+              className="text-xl py-2 border-b border-white/10 hover:text-[#7CFF00] transition-colors text-left"
             >
               Contact
-            </Link>
+            </button>
             <Button
               className="bg-white text-black hover:bg-[#7CFF00] rounded-full px-6 mt-4"
-              onClick={() => setIsMenuOpen(false)}
+              onClick={() => window.open('https://m.me/mr.c0oletz', '_blank')}
             >
               Let's talk about your project <ArrowRight className="ml-2 h-4 w-4" />
             </Button>
@@ -277,7 +565,10 @@ export default function Home() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.4 }}
         >
-          <Button className="bg-white text-black hover:bg-[#7CFF00] rounded-full px-6 py-6">
+          <Button 
+            className="bg-white text-black hover:bg-[#7CFF00] rounded-full px-6"
+            onClick={() => window.open('https://m.me/mr.c0oletz', '_blank')}
+          >
             Let's talk about your project <ArrowRight className="ml-2 h-4 w-4" />
           </Button>
           <Button variant="outline" className="text-white border-white/20 hover:bg-white/10 rounded-full px-6 py-6">
@@ -462,34 +753,42 @@ export default function Home() {
           </motion.div>
 
           {/* Large stylized text/logo */}
-          <motion.div
-            className="mt-24 relative overflow-hidden"
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            transition={{ duration: 1, delay: 0.3 }}
-            viewport={{ once: true }}
-          >
-            <div className="marquee-container">
-              <div className="marquee-content">
+ 
+        </div>
+      </section>
+      <motion.div
+          className="mt-24 relative overflow-hidden w-full"
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          transition={{ duration: 1, delay: 0.3 }}
+          viewport={{ once: true }}
+        >
+          <div className="relative w-full">
+            {/* Glow effect */}
+            <div className="absolute inset-0 blur-2xl"></div>
+            
+            {/* Marquee container */}
+            <div className="relative whitespace-nowrap overflow-hidden w-full">
+              <div className="animate-marquee inline-block">
                 <h2
-                  className="text-[6rem] sm:text-[8rem] md:text-[12rem] lg:text-[16rem] font-bold text-transparent tracking-tighter leading-none whitespace-nowrap"
+                  className="text-[6rem] sm:text-[8rem] md:text-[12rem] lg:text-[16rem] font-bold text-transparent tracking-tighter leading-none inline-block"
                   style={{ WebkitTextStroke: "1px rgba(255, 255, 255, 0.1)" }}
                 >
-                  designed <span style={{ WebkitTextStroke: "1px rgba(255, 255, 255, 0.2)", textShadow: "0 0 10px rgba(255, 255, 255, 0.1)" }}>Lance</span>
+                  designed <span style={{ WebkitTextStroke: "1px rgba(255, 255, 255, 0)", color: "rgba(128, 128, 128, 0.07)" }}> Lance</span>
                 </h2>
-              </div>
-              <div className="marquee-content" aria-hidden="true">
+                {/* Duplicate for seamless marquee */}
                 <h2
-                  className="text-[6rem] sm:text-[8rem] md:text-[12rem] lg:text-[16rem] font-bold text-transparent tracking-tighter leading-none whitespace-nowrap"
+                  className="text-[6rem] sm:text-[8rem] md:text-[12rem] lg:text-[16rem] font-bold text-transparent tracking-tighter leading-none inline-block"
                   style={{ WebkitTextStroke: "1px rgba(255, 255, 255, 0.1)" }}
                 >
-                  designed <span style={{ WebkitTextStroke: "1px rgba(255, 255, 255, 0.2)", textShadow: "0 0 10px rgba(255, 255, 255, 0.2)" }}>Lance</span>
+                  designed <span style={{ WebkitTextStroke: "1px rgba(255, 255, 255, 0)", color: "rgba(128, 128, 128, 0.07)" }}> Lance</span>
                 </h2>
               </div>
             </div>
-          </motion.div>
-        </div>
-      </section>
+          </div>
+        </motion.div>
+
+    
 
       {/* Portfolio Section */}
       <section className="container mx-auto px-4 py-24" id="proyectos">
@@ -584,253 +883,409 @@ export default function Home() {
       {/* Testimonials Section */}
       <section className="bg-white/5 py-24" id="testimonios">
         <div className="container mx-auto px-4">
-          <div className="text-center mb-16">
+          <motion.div 
+            className="text-center mb-16"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+            viewport={{ once: true }}
+          >
             <h2 className="text-4xl font-bold mb-4">
               What our <span className="text-[#7CFF00]">clients</span> say
             </h2>
             <p className="text-lg opacity-70 max-w-2xl mx-auto">
-              Discover why our clients trust us with their digital projects.
+              Discover why leading brands trust Pareng Lance with their digital projects.
             </p>
+          </motion.div>
+
+          {/* Testimonial Carousel */}
+          <div className="relative">
+            <div className="overflow-hidden">
+              <div 
+                ref={carouselRef}
+                id="testimonial-carousel"
+                className="flex flex-nowrap gap-6 pb-8 transition-transform duration-500 ease-in-out cursor-grab"
+                onMouseDown={handleMouseDown}
+                onMouseUp={handleMouseUp}
+                onMouseMove={handleMouseMove}
+                onMouseLeave={handleMouseLeave}
+                style={{ touchAction: 'pan-y pinch-zoom' }}
+              >
+                {testimonials.map((testimonial, index) => (
+                  <motion.div 
+                    key={testimonial.id} 
+                    className="min-w-[350px] md:min-w-[400px] bg-black/50 backdrop-blur-sm rounded-xl p-8 border border-white/10 hover:border-[#7CFF00]/30 transition-all duration-300 hover:shadow-lg hover:shadow-[#7CFF00]/10"
+                    initial="hidden"
+                    whileInView="visible"
+                    viewport={{ once: true }}
+                    variants={testimonialVariants}
+                    custom={index}
+                    transition={{ delay: index * 0.1 }}
+                  >
+                    <div className="flex items-center gap-1 mb-6">
+                      {[...Array(testimonial.rating)].map((_, i) => (
+                        <Star key={i} className="w-4 h-4 fill-[#7CFF00] text-[#7CFF00]" />
+                      ))}
+                    </div>
+                    <div className="relative mb-6">
+                      <svg className="absolute -top-4 -left-2 w-8 h-8 text-[#7CFF00]/20" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z" />
+                      </svg>
+                      <p className="italic text-sm leading-relaxed pl-6">"{testimonial.quote}"</p>
+                    </div>
+                    <div className="flex items-center gap-4">
+                      <div className="relative">
+                        <Image
+                          src={testimonial.image}
+                          alt={testimonial.name}
+                          width={50}
+                          height={50}
+                          className="rounded-full object-cover border-2 border-[#7CFF00]/30"
+                        />
+                        <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-[#7CFF00] rounded-full flex items-center justify-center">
+                          <CheckCircle className="w-3 h-3 text-black" />
+                        </div>
+                      </div>
+                      <div>
+                        <div className="font-semibold">{testimonial.name}</div>
+                        <div className="text-xs opacity-70">{testimonial.role}, {testimonial.company}</div>
+                        <div className="text-xs text-[#7CFF00] mt-1 font-medium">{testimonial.highlight}</div>
+                      </div>
+                    </div>
+                  </motion.div>
+                ))}
+                
+                {/* Add Your Testimonial Card */}
+                <motion.div 
+                  className="min-w-[350px] md:min-w-[400px] bg-black/50 backdrop-blur-sm rounded-xl p-8 border border-white/10 hover:border-[#7CFF00]/30 transition-all duration-300 hover:shadow-lg hover:shadow-[#7CFF00]/10 cursor-pointer flex flex-col items-center justify-center text-center"
+                  onClick={scrollToContact}
+                  initial="hidden"
+                  whileInView="visible"
+                  viewport={{ once: true }}
+                  variants={testimonialVariants}
+                  custom={testimonials.length}
+                  transition={{ delay: testimonials.length * 0.1 }}
+                  whileHover={{ scale: 1.03 }}
+                  whileTap={{ scale: 0.98 }}
+                >
+                  <motion.div 
+                    className="w-16 h-16 bg-[#7CFF00]/10 rounded-full flex items-center justify-center mb-6"
+                    whileHover={{ rotate: 15 }}
+                    transition={{ type: "spring", stiffness: 300 }}
+                  >
+                    <MessageCircle className="w-8 h-8 text-[#7CFF00]" />
+                  </motion.div>
+                  <h3 className="text-xl font-bold mb-3">Share Your Experience</h3>
+                  <p className="text-sm opacity-70 mb-6">
+                    Have you worked with Pareng Lance? We'd love to hear your feedback, testimonial, or any concerns to help us improve our services.
+                  </p>
+                  <Button className="bg-[#7CFF00] text-black hover:bg-white rounded-full px-6 flex items-center gap-2 group">
+                    Leave Your Feedback 
+                    <motion.span
+                      animate={{ x: [0, 5, 0] }}
+                      transition={{ repeat: Infinity, duration: 1.5, ease: "easeInOut" }}
+                    >
+                      <ArrowRight className="w-4 h-4" />
+                    </motion.span>
+                  </Button>
+                </motion.div>
+              </div>
+            </div>
+            
+            {/* Navigation Dots */}
+            <div className="flex justify-center gap-2 mt-8">
+              {testimonials.map((_, index) => (
+                <motion.button 
+                  key={index} 
+                  className={`w-2.5 h-2.5 rounded-full transition-all duration-300 ${
+                    index === 0 ? 'bg-[#7CFF00] w-6' : 'bg-white/30 hover:bg-white/50'
+                  }`}
+                  aria-label={`Go to testimonial ${index + 1}`}
+                  onClick={() => scrollToTestimonial(index)}
+                  whileHover={{ scale: 1.2 }}
+                  whileTap={{ scale: 0.9 }}
+                />
+              ))}
+            </div>
+            
+            {/* Navigation Arrows */}
+            <div className="absolute top-1/2 left-0 right-0 flex justify-between px-4 -translate-y-1/2 pointer-events-none">
+              <motion.button 
+                className="w-10 h-10 rounded-full bg-black/50 backdrop-blur-sm border border-white/10 flex items-center justify-center text-white hover:bg-[#7CFF00]/20 hover:border-[#7CFF00]/30 transition-all duration-300 pointer-events-auto"
+                onClick={() => {
+                  const currentIndex = Math.round(scrollLeft / 416);
+                  const prevIndex = (currentIndex - 1 + testimonials.length) % testimonials.length;
+                  scrollToTestimonial(prevIndex);
+                }}
+                aria-label="Previous testimonial"
+                whileHover={{ scale: 1.1, x: -3 }}
+                whileTap={{ scale: 0.9 }}
+              >
+                <ChevronLeft className="w-5 h-5" />
+              </motion.button>
+              <motion.button 
+                className="w-10 h-10 rounded-full bg-black/50 backdrop-blur-sm border border-white/10 flex items-center justify-center text-white hover:bg-[#7CFF00]/20 hover:border-[#7CFF00]/30 transition-all duration-300 pointer-events-auto"
+                onClick={() => {
+                  const currentIndex = Math.round(scrollLeft / 416);
+                  const nextIndex = (currentIndex + 1) % testimonials.length;
+                  scrollToTestimonial(nextIndex);
+                }}
+                aria-label="Next testimonial"
+                whileHover={{ scale: 1.1, x: 3 }}
+                whileTap={{ scale: 0.9 }}
+              >
+                <ChevronRight className="w-5 h-5" />
+              </motion.button>
+            </div>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-8">
-            {testimonials.map((testimonial) => (
-              <div key={testimonial.id} className="bg-black/50 backdrop-blur-sm rounded-xl p-8 border border-white/10">
-                <div className="flex items-center gap-1 mb-6">
-                  <Star className="w-4 h-4 fill-[#7CFF00] text-[#7CFF00]" />
-                  <Star className="w-4 h-4 fill-[#7CFF00] text-[#7CFF00]" />
-                  <Star className="w-4 h-4 fill-[#7CFF00] text-[#7CFF00]" />
-                  <Star className="w-4 h-4 fill-[#7CFF00] text-[#7CFF00]" />
-                  <Star className="w-4 h-4 fill-[#7CFF00] text-[#7CFF00]" />
-                </div>
-                <p className="italic mb-6 text-sm leading-relaxed">"{testimonial.quote}"</p>
-                <div className="flex items-center gap-4">
-                  <Image
-                    src={testimonial.image || "/placeholder.svg"}
-                    alt={testimonial.name}
-                    width={50}
-                    height={50}
-                    className="rounded-full object-cover"
-                  />
-                  <div>
-                    <div className="font-semibold">{testimonial.name}</div>
-                    <div className="text-xs opacity-70">{testimonial.company}</div>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
+          {/* Testimonial Stats */}
+          <motion.div 
+            ref={statsRef}
+            className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-16"
+            variants={statsVariants}
+            initial="hidden"
+            animate={statsControls}
+          >
+            <motion.div 
+              className="bg-black/30 backdrop-blur-sm rounded-xl p-6 border border-white/10 text-center"
+              variants={statItemVariants}
+            >
+              <motion.div 
+                className="text-4xl font-bold text-[#7CFF00] mb-2"
+                initial={{ opacity: 0, scale: 0.5 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.5, delay: 0.2 }}
+              >
+                <span>
+                  <CountUp from={0} to={100} duration={2} />
+                  <span>%</span>
+                </span>
+              </motion.div>
+              <div className="text-sm opacity-70">Client Satisfaction</div>
+            </motion.div>
+            <motion.div 
+              className="bg-black/30 backdrop-blur-sm rounded-xl p-6 border border-white/10 text-center"
+              variants={statItemVariants}
+            >
+              <motion.div 
+                className="text-4xl font-bold text-[#7CFF00] mb-2"
+                initial={{ opacity: 0, scale: 0.5 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.5, delay: 0.4 }}
+              >
+                <span>
+                  <CountUp from={0} to={120} duration={2} />
+                  <span>+</span>
+                </span>
+              </motion.div>
+              <div className="text-sm opacity-70">Projects Completed</div>
+            </motion.div>
+            <motion.div 
+              className="bg-black/30 backdrop-blur-sm rounded-xl p-6 border border-white/10 text-center"
+              variants={statItemVariants}
+            >
+              <motion.div 
+                className="text-4xl font-bold text-[#7CFF00] mb-2"
+                initial={{ opacity: 0, scale: 0.5 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.5, delay: 0.6 }}
+              >
+                <span>
+                  <CountUp from={0} to={40} duration={2} />
+                  <span>%</span>
+                </span>
+              </motion.div>
+              <div className="text-sm opacity-70">Average Conversion Increase</div>
+            </motion.div>
+          </motion.div>
         </div>
       </section>
 
       {/* Clients Section */}
-      <section className="container mx-auto px-4 py-24">
+      <section className="w-full py-24 relative overflow-hidden bg-black/40">
+        {/* Background Elements */}
+        <div className="absolute inset-0 bg-gradient-radial from-[#7CFF00]/5 via-transparent to-transparent opacity-50"></div>
+        <div className="absolute inset-0 bg-[linear-gradient(to_right,#000_2px,transparent_2px),linear-gradient(to_bottom,#000_2px,transparent_2px)] bg-[size:40px_40px] [mask-image:radial-gradient(ellipse_80%_50%_at_50%_50%,#000_70%,transparent_100%)] opacity-10"></div>
+
+        <div className="relative">
+          {/* Section Header with Animation */}
+          <motion.div 
+            className="text-center mb-20 container mx-auto px-4"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            viewport={{ once: true }}
+          >
+            <h2 className="text-4xl md:text-5xl font-bold mb-4">
+              Brands that <span className="text-[#7CFF00]">trust</span> us
+            </h2>
+            <p className="text-lg opacity-70 max-w-2xl mx-auto">
+              Join our growing list of satisfied clients from various industries
+            </p>
+          </motion.div>
+
+          {/* Marquee Client Logos - Row 1 */}
+          <div className="relative w-full overflow-hidden py-8 before:absolute before:left-0 before:top-0 before:z-10 before:h-full before:w-32 before:bg-gradient-to-r before:from-black before:to-transparent after:absolute after:right-0 after:top-0 after:z-10 after:h-full after:w-32 after:bg-gradient-to-l after:from-black after:to-transparent">
+            <motion.div 
+              className="flex gap-8 animate-marquee whitespace-nowrap"
+              initial={{ x: 0 }}
+              animate={{ x: "-50%" }}
+              transition={{ 
+                duration: 30,
+                repeat: Infinity,
+                ease: "linear"
+              }}
+            >
+              {[...clients, ...clients].map((client, index) => (
+                <motion.div
+                  key={`${client.id}-${index}`}
+                  className="relative group shrink-0"
+                  whileHover={{ scale: 1.05 }}
+                  transition={{ type: "spring", stiffness: 400, damping: 10 }}
+                >
+                  <div className="relative p-6 bg-white/5 backdrop-blur-sm rounded-xl border border-white/10 transition-all duration-300 group-hover:border-[#7CFF00]/30 group-hover:bg-white/10 w-48 h-24 flex items-center justify-center">
+                    {/* Glow Effect */}
+                    <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-[#7CFF00]/0 via-[#7CFF00]/0 to-[#7CFF00]/0 group-hover:from-[#7CFF00]/5 group-hover:via-[#7CFF00]/10 group-hover:to-[#7CFF00]/5 transition-all duration-500"></div>
+                    
+                    {/* Client Logo */}
+                    <div className="relative">
+                      <Image
+                        src={client.logo}
+                        alt={client.name}
+                        width={160}
+                        height={80}
+                        className="h-12 w-auto object-contain mx-auto filter grayscale opacity-60 transition-all duration-300 group-hover:grayscale-0 group-hover:opacity-100"
+                      />
+                    </div>
+
+                    {/* Hover Info */}
+                    <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                      <div className="bg-black/90 backdrop-blur-sm p-3 rounded-lg transform -translate-y-2 group-hover:translate-y-0 transition-all duration-300">
+                        <p className="text-sm text-white whitespace-nowrap font-medium">{client.name}</p>
+                      </div>
+                    </div>
+                  </div>
+                </motion.div>
+              ))}
+            </motion.div>
+          </div>
+
+          {/* Marquee Client Logos - Row 2 (Reverse Direction) */}
+          <div className="relative w-full overflow-hidden py-8 before:absolute before:left-0 before:top-0 before:z-10 before:h-full before:w-32 before:bg-gradient-to-r before:from-black before:to-transparent after:absolute after:right-0 after:top-0 after:z-10 after:h-full after:w-32 after:bg-gradient-to-l after:from-black after:to-transparent">
+            <motion.div 
+              className="flex gap-8 animate-marquee2 whitespace-nowrap"
+              initial={{ x: "-50%" }}
+              animate={{ x: "0%" }}
+              transition={{ 
+                duration: 30,
+                repeat: Infinity,
+                ease: "linear"
+              }}
+            >
+              {[...clients, ...clients].map((client, index) => (
+                <motion.div
+                  key={`${client.id}-${index}-reverse`}
+                  className="relative group shrink-0"
+                  whileHover={{ scale: 1.05 }}
+                  transition={{ type: "spring", stiffness: 400, damping: 10 }}
+                >
+                  <div className="relative p-6 bg-white/5 backdrop-blur-sm rounded-xl border border-white/10 transition-all duration-300 group-hover:border-[#7CFF00]/30 group-hover:bg-white/10 w-48 h-24 flex items-center justify-center">
+                    {/* Glow Effect */}
+                    <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-[#7CFF00]/0 via-[#7CFF00]/0 to-[#7CFF00]/0 group-hover:from-[#7CFF00]/5 group-hover:via-[#7CFF00]/10 group-hover:to-[#7CFF00]/5 transition-all duration-500"></div>
+                    
+                    {/* Client Logo */}
+                    <div className="relative">
+                      <Image
+                        src={client.logo}
+                        alt={client.name}
+                        width={160}
+                        height={80}
+                        className="h-12 w-auto object-contain mx-auto filter grayscale opacity-60 transition-all duration-300 group-hover:grayscale-0 group-hover:opacity-100"
+                      />
+                    </div>
+
+                    {/* Hover Info */}
+                    <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                      <div className="bg-black/90 backdrop-blur-sm p-3 rounded-lg transform translate-y-2 group-hover:translate-y-0 transition-all duration-300">
+                        <p className="text-sm text-white whitespace-nowrap font-medium">{client.name}</p>
+                      </div>
+                    </div>
+                  </div>
+                </motion.div>
+              ))}
+            </motion.div>
+          </div>
+
+          {/* Trust Badges */}
+          <div className="container mx-auto px-4">
+            
+            {/* CTA Button */}
+            <motion.div 
+              className="text-center mt-16"
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              transition={{ duration: 0.6, delay: 0.6 }}
+              viewport={{ once: true }}
+            >
+              <motion.div
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                <Button 
+                  className="bg-white/5 text-white hover:bg-[#7CFF00] hover:text-black rounded-full px-8 py-4 border border-white/10 hover:border-[#7CFF00] transition-all duration-300"
+                  onClick={() => scrollToContact()}
+                >
+                  Become Our Next Success Story
+                  <motion.span
+                    className="inline-block ml-2"
+                    animate={{ x: [0, 4, 0] }}
+                    transition={{ repeat: Infinity, duration: 1.5 }}
+                  >
+                    <ArrowRight className="h-4 w-4" />
+                  </motion.span>
+                </Button>
+              </motion.div>
+            </motion.div>
+          </div>
+        </div>
+      </section>
+        {/* FAQ Section */}
+        <section className="container mx-auto px-4 py-24" id="faq">
         <div className="text-center mb-16">
           <h2 className="text-4xl font-bold mb-4">
-            Brands that <span className="text-[#7CFF00]">trust</span> us
+            Frequently Asked <span className="text-[#7CFF00]">Questions</span>
           </h2>
+          <p className="text-lg opacity-70 max-w-2xl mx-auto">
+            Find answers to common questions about our design process, timelines, and services.
+          </p>
         </div>
 
-        <div className="flex flex-wrap justify-center items-center gap-12 opacity-60">
-          {clients.map((client) => (
-            <div key={client.id} className="grayscale hover:grayscale-0 transition-all duration-300">
-              <Image
-                src={client.logo || "/placeholder.svg"}
-                alt={client.name}
-                width={160}
-                height={80}
-                className="h-12 w-auto object-contain"
-              />
-            </div>
+        <div className="max-w-3xl mx-auto">
+          {faqs.map((faq, index) => (
+            <motion.div
+              key={index}
+              className="mb-4 border border-white/10 rounded-xl overflow-hidden"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: index * 0.1 }}
+              viewport={{ once: true }}
+            >
+              <FAQItem question={faq.question} answer={faq.answer} />
+            </motion.div>
           ))}
         </div>
-      </section>
 
-      {/* Experience Section */}
-      <section className="container mx-auto px-4 py-24 text-center">
-        <div className="max-w-5xl mx-auto">
-          <p className="text-xl md:text-3xl leading-relaxed">
-            With over 8 years of experience in{" "}
-            <span className="text-[#7CFF00]">web design, branding and social media</span>, I help brands and entrepreneurs
-            build their digital presence with innovative solutions. Every project I design is focused on
-            impacting, communicating and converting.
-          </p>
-        </div>
-      </section>
-
-      {/* CTA Section */}
-      <section className="bg-[#7CFF00]/10 py-24">
-        <div className="container mx-auto px-4 text-center">
-          <h2 className="text-4xl font-bold mb-6">
-            Ready to transform your <span className="text-[#7CFF00]">digital presence</span>?
-          </h2>
-          <p className="text-lg opacity-80 max-w-2xl mx-auto mb-10">
-            Let's talk about your project and how we can help you achieve your goals.
-          </p>
-          <Button className="bg-[#7CFF00] text-black hover:bg-white rounded-full px-8 py-6 text-lg">
-            Contact now <ArrowRight className="ml-2 h-5 w-5" />
+        <div className="mt-16 text-center">
+          <Button 
+            className="bg-white text-black hover:bg-[#7CFF00] rounded-full px-6"
+            onClick={() => scrollToContact()}
+          >
+            Still have questions? <ArrowRight className="ml-2 h-4 w-4" />
           </Button>
         </div>
       </section>
-
-      {/* Footer */}
-      <footer className="container mx-auto px-4 py-12 border-t border-white/10">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-          <div className="md:col-span-2">
-            <h3 className="text-xl font-bold mb-4">
-              designed<span className="text-[#7CFF00]">bydan</span>
-            </h3>
-            <p className="text-sm opacity-70 max-w-xs mb-6">
-              Transforming ideas into digital experiences that connect, impact and convert.
-            </p>
-            <div className="flex gap-4">
-              <Link
-                href="#"
-                className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-[#7CFF00]/20 transition-colors"
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="18"
-                  height="18"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path>
-                </svg>
-              </Link>
-              <Link
-                href="#"
-                className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-[#7CFF00]/20 transition-colors"
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="18"
-                  height="18"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
-                  <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
-                  <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
-                </svg>
-              </Link>
-              <Link
-                href="#"
-                className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-[#7CFF00]/20 transition-colors"
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="18"
-                  height="18"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path>
-                  <rect x="2" y="9" width="4" height="12"></rect>
-                  <circle cx="4" cy="4" r="2"></circle>
-                </svg>
-              </Link>
-            </div>
-          </div>
-
-          <div>
-            <h4 className="font-semibold mb-4">Links</h4>
-            <ul className="space-y-2">
-              <li>
-                <Link
-                  href="#servicios"
-                  className="text-sm opacity-70 hover:opacity-100 hover:text-[#7CFF00] transition-colors"
-                >
-                  Services
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="#proyectos"
-                  className="text-sm opacity-70 hover:opacity-100 hover:text-[#7CFF00] transition-colors"
-                >
-                  Projects
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="#testimonios"
-                  className="text-sm opacity-70 hover:opacity-100 hover:text-[#7CFF00] transition-colors"
-                >
-                  Testimonials
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/about"
-                  className="text-sm opacity-70 hover:opacity-100 hover:text-[#7CFF00] transition-colors"
-                >
-                  About me
-                </Link>
-              </li>
-            </ul>
-          </div>
-
-          <div>
-            <h4 className="font-semibold mb-4">Contact</h4>
-            <ul className="space-y-2">
-              <li className="text-sm opacity-70">hola@designedbydan.com</li>
-              <li className="text-sm opacity-70">+34 123 456 789</li>
-              <li className="text-sm opacity-70">Madrid, Spain</li>
-            </ul>
-            <div className="mt-6">
-              <h4 className="font-semibold mb-2 text-sm">Newsletter</h4>
-              <div className="flex">
-                <input
-                  type="email"
-                  placeholder="Your email"
-                  className="px-3 py-2 rounded-l-lg bg-white/10 border border-white/10 outline-none w-full"
-                />
-                <Button className="rounded-l-none bg-[#7CFF00] text-black hover:bg-[#7CFF00]/90">
-                  <ArrowRight className="h-4 w-4" />
-                </Button>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div className="flex flex-col md:flex-row justify-between items-center mt-12 pt-8 border-t border-white/10">
-          <p className="text-xs opacity-50">
-            © {new Date().getFullYear()} designedbydan. All rights reserved.
-          </p>
-          <div className="flex items-center gap-4 mt-4 md:mt-0">
-            <Link href="#" className="text-xs opacity-50 hover:opacity-70">
-              Privacy Policy
-            </Link>
-            <Link href="#" className="text-xs opacity-50 hover:opacity-70">
-              Terms and Conditions
-            </Link>
-            <div className="flex items-center">
-              <span className="text-xs opacity-50 mr-2">Made with</span>
-              <span className="text-[#7CFF00]">♥</span>
-            </div>
-          </div>
-        </div>
-      </footer>
-
-      {/* Made with Framer badge */}
-      <div className="fixed bottom-4 right-4">
-        <div className="bg-white/10 backdrop-blur-md rounded-full px-3 py-1.5 text-xs flex items-center">
-          <span>Made in Framer</span>
-        </div>
-      </div>
+   
     </div>
   )
 }
