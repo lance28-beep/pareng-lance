@@ -394,12 +394,9 @@ export default function Home() {
 
   // Update the scrollToContact function to use our new hook
   const scrollToContact = () => {
-    const contactSection = document.getElementById('contacto');
+    const contactSection = document.getElementById('contact');
     if (contactSection) {
-      scrollToSection('contacto');
-    } else {
-      // Fallback to the contact page if the section is not found on the current page
-      window.location.href = '/contacto';
+      scrollToSection('contact');
     }
   };
 
@@ -671,6 +668,17 @@ export default function Home() {
                   Every design decision is backed by strategic thinking, ensuring that our work not only looks great but also achieves your business objectives.
                 </p>
               </div>
+            </div>
+            
+            {/* Contact Link Button */}
+            <div className="mt-12">
+              <Button 
+                className="bg-[#7CFF00] text-black hover:bg-[#7CFF00]/90 rounded-full px-6 py-6 flex items-center gap-2 mx-auto"
+                onClick={scrollToContact}
+              >
+                <span>Contact Us</span>
+                <ArrowRight className="h-4 w-4" />
+              </Button>
             </div>
           </motion.div>
 
