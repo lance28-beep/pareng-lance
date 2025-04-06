@@ -208,6 +208,8 @@ export default function ContactForm() {
                     >
                       <path d="M19 9a7 7 0 1 1-6.74-6.74V2h-3v8h3v-1.26A7 7 0 0 1 19 9Z" />
                       <path d="M10 14v-2a7 7 0 0 1 7-7" />
+                      <path d="M10 14c0 3.866 3.134 7 7 7" />
+                      <path d="M10 14c0-3.866 3.134-7 7-7" />
                     </svg>
                   </a>
                   <a

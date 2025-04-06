@@ -10,6 +10,7 @@ import { motion } from "framer-motion"
 import PhilosophySection from "@/components/philosophy-section"
 import ContactForm from "@/components/contact-form"
 import BackgroundParticles from "@/components/background-particles"
+import AIChat from "@/components/ai-chat"
 
 // Custom hook for smooth scrolling
 const useSmoothScroll = () => {
@@ -173,8 +174,9 @@ export default function Home() {
                 Transforming ideas into digital experiences that connect, impact, and convert.
               </p>
               <div className="flex gap-4">
+                {/* link to my facebook */}
                 <Link
-                  href="#"
+                  href="https://www.facebook.com/HustleWithParengLance"
                   className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-[#7CFF00]/20 transition-colors"
                 >
                   <svg
@@ -191,8 +193,9 @@ export default function Home() {
                     <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path>
                   </svg>
                 </Link>
+                {/* link to my instagram */}
                 <Link
-                  href="#"
+                  href="https://www.instagram.com/vallelance/"
                   className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-[#7CFF00]/20 transition-colors"
                 >
                   <svg
@@ -211,8 +214,9 @@ export default function Home() {
                     <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
                   </svg>
                 </Link>
+                {/* link to my linkedin */}
                 <Link
-                  href="#"
+                  href="https://www.linkedin.com/in/rolando-valle-43159b199/"
                   className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-[#7CFF00]/20 transition-colors"
                 >
                   <svg
@@ -263,7 +267,7 @@ export default function Home() {
                 </li>
                 <li>
                   <Link
-                    href="/about"
+                    href="#"
                     className="text-sm opacity-70 hover:opacity-100 hover:text-[#7CFF00] transition-colors"
                   >
                     About me
@@ -285,18 +289,18 @@ export default function Home() {
                 </li>
                 <li>
                   <a
-                    href="mailto:contact@example.com"
+                    href="mailto:vallelance8@gmail.com"
                     className="text-sm opacity-70 hover:opacity-100 hover:text-[#7CFF00] transition-colors"
                   >
-                    contact@example.com
+                    vallelance8@gmail.com
                   </a>
                 </li>
                 <li>
                   <a
-                    href="tel:+1234567890"
+                    href="tel:+639 288 898 8692"
                     className="text-sm opacity-70 hover:opacity-100 hover:text-[#7CFF00] transition-colors"
                   >
-                    +1 (234) 567-890
+                    +639 288 898 8692
                   </a>
                 </li>
               </ul>
@@ -322,6 +326,9 @@ export default function Home() {
             </div>
           </div>
         </footer>
+        
+        {/* AI Chat Component */}
+        <AIChat />
       </div>
     </>
   )

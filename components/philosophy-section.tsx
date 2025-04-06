@@ -27,6 +27,7 @@ import ProcessSection from "@/components/process-section"
 import MethodologySection from "@/components/methodology-section"
 import CountUp from './CountUp'
 import FAQItem from "@/components/faq-item"
+import { Navbar } from '@/components/Navbar'
 
 // Custom hook for smooth scrolling
 const useSmoothScroll = (setIsMenuOpen: React.Dispatch<React.SetStateAction<boolean>>) => {
@@ -75,14 +76,15 @@ export default function Home() {
     {
       id: 1,
       title: "Automotive Design",
+      image: "/coming.png",
       category: "branding",
       description: "Branding and web design for luxury company",
     },
-    { id: 2, title: "Web Platform", category: "web", description: "Interface design for site builder" },
-    { id: 3, title: "Mobile App", category: "ui", description: "Interface design for financial application" },
-    { id: 4, title: "E-commerce", category: "web", description: "Online store for fashion brand" },
-    { id: 5, title: "Corporate Site", category: "branding", description: "Web design for technology company" },
-    { id: 6, title: "Dashboard", category: "ui", description: "Administration interface for SaaS" },
+    { id: 2, title: "Web Platform", category: "web", description: "Interface design for site builder", image: "/coming.png" },
+    { id: 3, title: "Mobile App", category: "ui", description: "Interface design for financial application", image: "/coming.png" },
+    { id: 4, title: "E-commerce", category: "web", description: "Online store for fashion brand", image: "/coming.png" },
+    { id: 5, title: "Corporate Site", category: "branding", description: "Web design for technology company", image: "/coming.png" },
+        { id: 6, title: "Dashboard", category: "ui", description: "Administration interface for SaaS", image: "/coming.png" },
   ]
 
   const filteredProjects = activeTab === "all" ? projects : projects.filter((project) => project.category === activeTab)
@@ -251,23 +253,53 @@ export default function Home() {
     {
       question: "What is your design process?",
       answer:
-        "My process begins with a discovery phase to understand your objectives, followed by research, wireframing, visual design, development, and finally launch and continuous optimization.",
+        "My design process follows a comprehensive approach: 1) Discovery phase to understand your business goals, target audience, and unique challenges; 2) Research and competitive analysis to identify opportunities; 3) Strategy development to align design with business objectives; 4) Wireframing and prototyping to visualize the user experience; 5) Visual design that reflects your brand identity; 6) Development with clean, efficient code; 7) Testing across devices and browsers; 8) Launch with performance optimization; and 9) Post-launch support and continuous improvement based on analytics and user feedback.",
     },
     {
       question: "How long does it take to complete a project?",
       answer:
-        "The time varies depending on the complexity of the project. A typical website can take 4 to 8 weeks, while more complex projects may require 2-3 months.",
+        "Project timelines vary based on scope and complexity. A typical website redesign takes 4-8 weeks from concept to launch, while more complex projects like e-commerce platforms or custom web applications may require 2-3 months. I provide detailed timelines during our initial consultation and keep you updated throughout the process. For urgent projects, I offer expedited services with additional fees.",
     },
     {
       question: "Do you work with international clients?",
       answer:
-        "Yes, I work with clients from all over the world. Communication is mainly done through video calls and online collaboration tools.",
+        "Yes, I work with clients worldwide and have experience managing projects across different time zones. Communication is primarily conducted through video calls, email, and collaborative tools like Figma and Asana. I'm fluent in English and can accommodate various communication preferences. For international projects, I offer flexible payment options and clear documentation of deliverables.",
     },
     {
       question: "Do you offer maintenance after launch?",
       answer:
-        "Yes, I offer maintenance plans to ensure your website remains updated, secure, and functioning correctly.",
+        "Yes, I offer comprehensive maintenance plans to ensure your website remains secure, up-to-date, and performing optimally. These plans include regular security updates, content updates, performance monitoring, technical support, and monthly reports. I also provide training sessions to help you manage your website content independently if desired.",
     },
+    {
+      question: "What is your pricing structure?",
+      answer:
+        "My pricing is project-based and depends on factors such as complexity, features required, and timeline. I offer transparent pricing with no hidden fees and provide detailed proposals before starting any work. For smaller businesses, I offer starter packages, while larger organizations can benefit from custom enterprise solutions. I'm happy to discuss your budget and find a solution that delivers value within your constraints.",
+    },
+    {
+      question: "Do you handle both design and development?",
+      answer:
+        "Yes, I offer end-to-end services covering both design and development. This integrated approach ensures seamless execution from concept to launch, with consistent quality throughout the process. For specialized projects requiring additional expertise, I have a network of trusted specialists I can collaborate with while maintaining project oversight.",
+    },
+    {
+      question: "How do you ensure my website will be mobile-friendly?",
+      answer:
+        "I design all websites with a mobile-first approach, ensuring they look and function perfectly across all devices and screen sizes. This includes responsive design techniques, touch-friendly interfaces, optimized images, and performance considerations for mobile users. I test extensively on various devices and use tools like Google's Mobile-Friendly Test to verify compatibility.",
+    },
+    {
+      question: "What technologies and platforms do you work with?",
+      answer:
+        "I work with a wide range of technologies including React, Next.js, Vue.js, and traditional HTML/CSS/JavaScript. For content management systems, I specialize in WordPress, Shopify, and headless CMS solutions. I choose the most appropriate technology stack based on your specific needs, considering factors like scalability, performance requirements, and budget constraints.",
+    },
+    {
+      question: "How do you handle revisions and feedback?",
+      answer:
+        "I believe in collaborative design and include multiple revision rounds in my process. After each major milestone, I present work for your feedback and incorporate your suggestions. I maintain clear communication throughout and document all changes. For larger projects, I schedule regular check-ins to ensure we're aligned and can address concerns promptly.",
+    },
+    {
+      question: "Do you offer SEO services with your web design?",
+      answer:
+        "Yes, I incorporate SEO best practices into all website designs, including proper structure, meta tags, optimized content, and technical SEO elements. I can also provide ongoing SEO services to improve your search rankings and drive organic traffic. For comprehensive SEO strategies, I offer additional packages that include keyword research, content optimization, and performance tracking.",
+    }
   ]
 
   const scrollToTestimonial = (index: number) => {
@@ -417,118 +449,7 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-black text-white">
-      {/* Navigation */}
-      <header
-        className={cn(
-          "fixed top-0 left-0 right-0 z-50 transition-all duration-300",
-          isScrolled ? "bg-black/80 backdrop-blur-md py-3" : "bg-transparent py-6",
-        )}
-      >
-        <div className="container mx-auto px-4 flex justify-between items-center">
-          <div className="flex items-center">
-            <Link href="/">
-              <h1 className="text-xl font-bold">
-                Pareng <span className="text-[#7CFF00]">Lance</span>
-              </h1>
-            </Link>
-            <p className="text-xs ml-2 opacity-70 uppercase tracking-wider hidden sm:block">VISUAL | WEB DESIGN</p>
-          </div>
-
-          {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center gap-8">
-            <button 
-              onClick={() => scrollToSection('servicios')} 
-              className="text-sm hover:text-[#7CFF00] transition-colors"
-            >
-              Services
-            </button>
-            <button 
-              onClick={() => scrollToSection('proyectos')} 
-              className="text-sm hover:text-[#7CFF00] transition-colors"
-            >
-              Projects
-            </button>
-            <button 
-              onClick={() => scrollToSection('testimonios')} 
-              className="text-sm hover:text-[#7CFF00] transition-colors"
-            >
-              Testimonials
-            </button>
-            <button 
-              onClick={() => scrollToSection('faq')} 
-              className="text-sm hover:text-[#7CFF00] transition-colors"
-            >
-              FAQ
-            </button>
-            <button 
-              onClick={() => scrollToSection('contact')} 
-              className="text-sm hover:text-[#7CFF00] transition-colors"
-            >
-              Contact
-            </button>
-            <Button 
-              className="bg-white text-black hover:bg-[#7CFF00] rounded-full px-6"
-              onClick={() => window.open('https://m.me/mr.c0oletz', '_blank')}
-            >
-              Let's talk about your project <ArrowRight className="ml-2 h-4 w-4" />
-            </Button>
-          </nav>
-
-          {/* Mobile Menu Button */}
-          <button className="md:hidden text-white" onClick={() => setIsMenuOpen(!isMenuOpen)}>
-            {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
-          </button>
-        </div>
-
-        {/* Mobile Menu */}
-        <div
-          className={cn(
-            "fixed inset-0 bg-black z-40 transition-transform duration-300 md:hidden pt-20",
-            isMenuOpen ? "translate-x-0" : "translate-x-full",
-          )}
-        >
-          <nav className="container mx-auto px-4 py-8 flex flex-col gap-6">
-            <button
-              onClick={() => scrollToSection('servicios')}
-              className="text-xl py-2 border-b border-white/10 hover:text-[#7CFF00] transition-colors text-left"
-            >
-              Services
-            </button>
-            <button
-              onClick={() => scrollToSection('proyectos')}
-              className="text-xl py-2 border-b border-white/10 hover:text-[#7CFF00] transition-colors text-left"
-            >
-              Projects
-            </button>
-            <button
-              onClick={() => scrollToSection('testimonios')}
-              className="text-xl py-2 border-b border-white/10 hover:text-[#7CFF00] transition-colors text-left"
-            >
-              Testimonials
-            </button>
-            <button
-              onClick={() => scrollToSection('faq')}
-              className="text-xl py-2 border-b border-white/10 hover:text-[#7CFF00] transition-colors text-left"
-            >
-              FAQ
-            </button>
-            <button
-              onClick={() => scrollToSection('contacto')}
-              className="text-xl py-2 border-b border-white/10 hover:text-[#7CFF00] transition-colors text-left"
-            >
-              Contact
-            </button>
-            <Button
-              className="bg-white text-black hover:bg-[#7CFF00] rounded-full px-6 mt-4"
-              onClick={() => window.open('https://m.me/mr.c0oletz', '_blank')}
-            >
-              Let's talk about your project <ArrowRight className="ml-2 h-4 w-4" />
-            </Button>
-          </nav>
-        </div>
-      </header>
-
-      {/* Hero Section */}
+      <Navbar />
       <main className="container mx-auto px-4 pt-40 pb-24">
         {/* Badge */}
         <motion.div
@@ -571,7 +492,8 @@ export default function Home() {
           >
             Let's talk about your project <ArrowRight className="ml-2 h-4 w-4" />
           </Button>
-          <Button variant="outline" className="text-white border-white/20 hover:bg-white/10 rounded-full px-6 py-6">
+          {/* link to services section */}
+          <Button variant="outline" className="text-white border-white/20 hover:bg-white/10 rounded-full px-6 py-6" onClick={() => scrollToSection('servicios')}  >
             View Services
           </Button>
         </motion.div>
@@ -853,7 +775,7 @@ export default function Home() {
           {filteredProjects.map((project) => (
             <div key={project.id} className="rounded-xl overflow-hidden relative group">
               <Image
-                src={`/placeholder.svg?height=600&width=800&text=${project.title}`}
+                src={project.image}
                 alt={project.title}
                 width={800}
                 height={600}
